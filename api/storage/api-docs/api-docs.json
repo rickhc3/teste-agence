@@ -34,13 +34,13 @@
                 "tags": [
                     "Consultores"
                 ],
-                "summary": "Receita líquida e mais informações sobre receitas dos consultores por mês",
+                "summary": "Consultants' Net Revenue and related information per month",
                 "operationId": "f6298c4e4bd814deda57420fcfe7016e",
                 "parameters": [
                     {
                         "name": "users[]",
                         "in": "query",
-                        "description": "Nomes de usuários dos consultores",
+                        "description": "Usernames of the consultants",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -51,7 +51,7 @@
                     {
                         "name": "start_at",
                         "in": "query",
-                        "description": "Data de início (formato: YYYY-MM-DD)",
+                        "description": "Start date (format: YYYY-MM-DD)",
                         "schema": {
                             "type": "string"
                         }
@@ -59,7 +59,7 @@
                     {
                         "name": "end_at",
                         "in": "query",
-                        "description": "Data de término (formato: YYYY-MM-DD)",
+                        "description": "End date (format: YYYY-MM-DD)",
                         "schema": {
                             "type": "string"
                         }
@@ -67,71 +67,50 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Sucesso",
+                        "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "month1": {
-                                            "type": "array",
-                                            "items": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "co_usuario": {
+                                                "type": "string"
+                                            },
+                                            "no_usuario": {
+                                                "type": "string"
+                                            },
+                                            "months": {
                                                 "properties": {
-                                                    "co_usuario": {
-                                                        "type": "string"
-                                                    },
-                                                    "no_usuario": {
-                                                        "type": "string"
-                                                    },
-                                                    "net_revenue": {
-                                                        "type": "string"
-                                                    },
-                                                    "brut_salario": {
-                                                        "type": "string"
-                                                    },
-                                                    "comission": {
-                                                        "type": "string"
-                                                    },
-                                                    "profit": {
-                                                        "type": "string"
+                                                    "YYYY-MM": {
+                                                        "properties": {
+                                                            "net_revenue": {
+                                                                "type": "string"
+                                                            },
+                                                            "brut_salario": {
+                                                                "type": "string"
+                                                            },
+                                                            "comission": {
+                                                                "type": "string"
+                                                            },
+                                                            "profit": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
                                                     }
                                                 },
                                                 "type": "object"
                                             }
                                         },
-                                        "month2": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "co_usuario": {
-                                                        "type": "string"
-                                                    },
-                                                    "no_usuario": {
-                                                        "type": "string"
-                                                    },
-                                                    "net_revenue": {
-                                                        "type": "string"
-                                                    },
-                                                    "brut_salario": {
-                                                        "type": "string"
-                                                    },
-                                                    "comission": {
-                                                        "type": "string"
-                                                    },
-                                                    "profit": {
-                                                        "type": "string"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
+                                        "type": "object"
+                                    }
                                 }
                             }
                         }
                     },
                     "422": {
-                        "description": "Erro de validação"
+                        "description": "Validation Error"
                     }
                 }
             }

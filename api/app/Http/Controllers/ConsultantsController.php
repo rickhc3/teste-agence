@@ -31,143 +31,137 @@ class ConsultantsController extends Controller
         return ConsultantResource::collection($consultants);
     }
 
-  /**
+/**
  * @OA\Get(
  *      path="/api/consultants/net-revenue",
- *      summary="Receita líquida e mais informações sobre receitas dos consultores por mês",
+ *      summary="Consultants' Net Revenue and related information per month",
  *      tags={"Consultores"},
  *      @OA\Parameter(
  *          name="users[]",
  *          in="query",
- *          description="Nomes de usuários dos consultores",
+ *          description="Usernames of the consultants",
  *          @OA\Schema(type="array", @OA\Items(type="string"))
  *      ),
  *      @OA\Parameter(
  *          name="start_at",
  *          in="query",
- *          description="Data de início (formato: YYYY-MM-DD)",
+ *          description="Start date (format: YYYY-MM-DD)",
  *          @OA\Schema(type="string")
  *      ),
  *      @OA\Parameter(
  *          name="end_at",
  *          in="query",
- *          description="Data de término (formato: YYYY-MM-DD)",
+ *          description="End date (format: YYYY-MM-DD)",
  *          @OA\Schema(type="string")
  *      ),
  *      @OA\Response(
  *          response=200,
- *          description="Sucesso",
+ *          description="Success",
  *          @OA\JsonContent(
- *              type="object",
- *              @OA\Property(
- *                  property="month1",
- *                  type="array",
- *                  @OA\Items(
- *                      @OA\Property(property="co_usuario", type="string"),
- *                      @OA\Property(property="no_usuario", type="string"),
- *                      @OA\Property(property="net_revenue", type="string"),
- *                      @OA\Property(property="brut_salario", type="string"),
- *                      @OA\Property(property="comission", type="string"),
- *                      @OA\Property(property="profit", type="string"),
+ *              type="array",
+ *              @OA\Items(
+ *                  @OA\Property(property="co_usuario", type="string"),
+ *                  @OA\Property(property="no_usuario", type="string"),
+ *                  @OA\Property(property="months", type="object",
+ *                      @OA\Property(property="YYYY-MM", type="object",
+ *                          @OA\Property(property="net_revenue", type="string"),
+ *                          @OA\Property(property="brut_salario", type="string"),
+ *                          @OA\Property(property="comission", type="string"),
+ *                          @OA\Property(property="profit", type="string")
+ *                      )
  *                  )
- *              ),
- *              @OA\Property(
- *                  property="month2",
- *                  type="array",
- *                  @OA\Items(
- *                      @OA\Property(property="co_usuario", type="string"),
- *                      @OA\Property(property="no_usuario", type="string"),
- *                      @OA\Property(property="net_revenue", type="string"),
- *                      @OA\Property(property="brut_salario", type="string"),
- *                      @OA\Property(property="comission", type="string"),
- *                      @OA\Property(property="profit", type="string"),
- *                  )
- *              ),
- *          ),
+ *              )
+ *          )
  *      ),
  *      @OA\Response(
  *          response=422,
- *          description="Erro de validação",
+ *          description="Validation Error",
  *      ),
  * )
  */
 
 
- public function showNetRevenue(Request $request)
- {
-     $userIds = $request->input('users');
-     $startAt = $request->input('start_at');
-     $endAt = $request->input('end_at');
 
-     $consultantsQuery = $this->getActiveConsultantsWithPermissions();
+    public function showNetRevenue(Request $request)
+    {
+        $userIds = $request->input('users');
+        $startAt = $request->input('start_at');
+        $endAt = $request->input('end_at');
 
-     if (!empty($userIds)) {
-         $consultantsQuery->whereIn('co_usuario', $userIds);
-     }
+        $consultantsQuery = $this->getActiveConsultantsWithPermissions();
 
-     $consultants = $consultantsQuery->with(['orderServices.invoices' => function ($query) use ($startAt, $endAt) {
-         if ($startAt !== null && $endAt !== null) {
-             $query->whereBetween('data_emissao', [$startAt, $endAt]);
-         }
-     }, 'salary'])->get();
+        if (!empty($userIds)) {
+            $consultantsQuery->whereIn('co_usuario', $userIds);
+        }
 
-     $result = [];
+        $consultants = $consultantsQuery->with(['orderServices.invoices' => function ($query) use ($startAt, $endAt) {
+            if ($startAt !== null && $endAt !== null) {
+                $query->whereBetween('data_emissao', [$startAt, $endAt]);
+            }
+        }, 'salary'])->get();
 
-     $startDate = Carbon::parse($startAt);
-     $endDate = Carbon::parse($endAt);
+        $result = [];
 
-     while ($startDate->lte($endDate)) {
-         $month = $startDate->format('Y-m');
+        foreach ($consultants as $consultant) {
+            $consultantData = [
+                'co_usuario' => $consultant->co_usuario,
+                'no_usuario' => $consultant->no_usuario,
+                'months' => []
+            ];
 
-         $consultantsForMonth = $consultants->map(function ($consultant) use ($startDate) {
-             $netRevenue = $this->calculateNetRevenueForMonth($consultant, $startDate);
-             $comission = $this->calculateComissionForMonth($consultant, $startDate);
-             $fixedCost = $consultant->salary ? $consultant->salary->brut_salario : 0;
-             $profit = $netRevenue - ($fixedCost + $comission);
+            $startDate = Carbon::parse($startAt);
+            $endDate = Carbon::parse($endAt);
 
-             return [
-                 'co_usuario' => $consultant->co_usuario,
-                 'no_usuario' => $consultant->no_usuario,
-                 'net_revenue' => number_format($netRevenue, 2, ',', '.'),
-                 'brut_salario' => number_format($fixedCost, 2, ',', '.'),
-                 'comission' => number_format($comission, 2, ',', '.'),
-                 'profit' => number_format($profit, 2, ',', '.'),
-             ];
-         });
+            while ($startDate->lte($endDate)) {
+                $month = $startDate->format('Y-m');
 
-         $result[$month] = $consultantsForMonth;
+                $netRevenue = $this->calculateNetRevenueForMonth($consultant, $startDate);
+                $comission = $this->calculateComissionForMonth($consultant, $startDate);
+                $fixedCost = $consultant->salary ? $consultant->salary->brut_salario : 0;
+                $profit = $netRevenue - ($fixedCost + $comission);
 
-         $startDate->addMonth();
-     }
+                $consultantData['months'][$month] = [
+                    'net_revenue' => number_format($netRevenue, 2, ',', '.'),
+                    'brut_salario' => number_format($fixedCost, 2, ',', '.'),
+                    'comission' => number_format($comission, 2, ',', '.'),
+                    'profit' => number_format($profit, 2, ',', '.')
+                ];
 
-     return response()->json($result);
- }
+                $startDate->addMonth();
+            }
 
- private function calculateNetRevenueForMonth($consultant, $startDate)
- {
-     return $consultant->orderServices->sum(function ($orderService) use ($startDate) {
-         $invoices = $orderService->invoices->filter(function ($invoice) use ($startDate) {
-             return Carbon::parse($invoice->data_emissao)->isSameMonth($startDate);
-         });
+            $result[] = $consultantData;
+        }
 
-         $taxes = ($invoices->sum('valor') * ($invoices->sum('total_imp_inc') / 100));
-         return $invoices->sum('valor') - $taxes;
-     });
- }
+        return response()->json($result);
+    }
 
- private function calculateComissionForMonth($consultant, $startDate)
- {
-     return $consultant->orderServices->sum(function ($orderService) use ($startDate) {
-         $invoices = $orderService->invoices->filter(function ($invoice) use ($startDate) {
-             return Carbon::parse($invoice->data_emissao)->isSameMonth($startDate);
-         });
 
-         $taxes = ($invoices->sum('valor') * ($invoices->sum('total_imp_inc') / 100));
-         $percentageComission = $invoices->sum('comissao_cn') / 100;
-         $total = $invoices->sum('valor') - $taxes;
-         return $total * $percentageComission;
-     });
- }
+    private function calculateNetRevenueForMonth($consultant, $startDate)
+    {
+        return $consultant->orderServices->sum(function ($orderService) use ($startDate) {
+            $invoices = $orderService->invoices->filter(function ($invoice) use ($startDate) {
+                return Carbon::parse($invoice->data_emissao)->isSameMonth($startDate);
+            });
+
+            $taxes = ($invoices->sum('valor') * ($invoices->sum('total_imp_inc') / 100));
+            return $invoices->sum('valor') - $taxes;
+        });
+    }
+
+    private function calculateComissionForMonth($consultant, $startDate)
+    {
+        return $consultant->orderServices->sum(function ($orderService) use ($startDate) {
+            $invoices = $orderService->invoices->filter(function ($invoice) use ($startDate) {
+                return Carbon::parse($invoice->data_emissao)->isSameMonth($startDate);
+            });
+
+            $taxes = ($invoices->sum('valor') * ($invoices->sum('total_imp_inc') / 100));
+            $percentageComission = $invoices->sum('comissao_cn') / 100;
+            $total = $invoices->sum('valor') - $taxes;
+            return $total * $percentageComission;
+        });
+    }
 
     private function getActiveConsultantsWithPermissions()
     {
