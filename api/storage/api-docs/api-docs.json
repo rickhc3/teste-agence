@@ -1,0 +1,206 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API - Teste Técnico Agence",
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/consultants": {
+            "get": {
+                "tags": [
+                    "Consultores"
+                ],
+                "summary": "Lista de consultores ativos",
+                "operationId": "2fb14ac2d1b691a56290eebba44a48a4",
+                "responses": {
+                    "200": {
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ConsultantResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/consultants/net-revenue": {
+            "get": {
+                "tags": [
+                    "Consultores"
+                ],
+                "summary": "Receita líquida dos consultores",
+                "operationId": "f6298c4e4bd814deda57420fcfe7016e",
+                "parameters": [
+                    {
+                        "name": "users[]",
+                        "in": "query",
+                        "description": "Nomes de usuários dos consultores",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "start_at",
+                        "in": "query",
+                        "description": "Data de início (formato: YYYY-MM-DD)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "end_at",
+                        "in": "query",
+                        "description": "Data de término (formato: YYYY-MM-DD)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "co_usuario": {
+                                                "type": "string"
+                                            },
+                                            "no_usuario": {
+                                                "type": "string"
+                                            },
+                                            "net_revenue": {
+                                                "type": "string"
+                                            },
+                                            "brut_salario": {
+                                                "type": "string"
+                                            },
+                                            "comission": {
+                                                "type": "string"
+                                            },
+                                            "profit": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                }
+            }
+        },
+        "/api/customers": {
+            "get": {
+                "tags": [
+                    "Clientes"
+                ],
+                "summary": "Lista de clientes ativos",
+                "operationId": "22535199fbc2fd0bf83c0bb5e0af4b8c",
+                "responses": {
+                    "200": {
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CustomerResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/customers/net-revenue": {
+            "get": {
+                "tags": [
+                    "Clientes"
+                ],
+                "summary": "Receita líquida dos clientes",
+                "operationId": "d12997acefcd4672ea9775713d25d5ca",
+                "parameters": [
+                    {
+                        "name": "customers",
+                        "in": "query",
+                        "description": "IDs dos clientes",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    {
+                        "name": "start_at",
+                        "in": "query",
+                        "description": "Data de início (formato: YYYY-MM-DD)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "end_at",
+                        "in": "query",
+                        "description": "Data de término (formato: YYYY-MM-DD)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "customer_id": {
+                                                "type": "integer"
+                                            },
+                                            "customer_name": {
+                                                "type": "string"
+                                            },
+                                            "net_revenue": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ConsultantResource": {},
+            "CustomerResource": {}
+        }
+    }
+}

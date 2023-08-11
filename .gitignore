@@ -1,0 +1,45 @@
+# Arquivos gerados pelo sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos gerados pelo editor de código
+.vscode/
+.idea/
+*.sublime-*
+
+# Dependências e arquivos gerados pelo Composer (Laravel)
+/vendor/
+composer.lock
+.env
+
+# Dependências e arquivos gerados pelo NPM (Nuxt)
+/node_modules/
+npm-debug.log
+yarn-error.log
+.env
+
+# Arquivos de build e cache do Laravel
+/bootstrap/
+/public/hot
+/public/storage
+/storage/*.key
+/storage/debugbar
+
+# Arquivos de build e cache do Nuxt
+/.nuxt/
+/dist/
+.cache/
+
+# Logs e arquivos temporários
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Outros arquivos e diretórios a serem ignorados
+Homestead.yaml
+Homestead.json
+.env.homestead
+.env.local
+.env.dusk.local
+.env.dusk
