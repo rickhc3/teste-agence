@@ -10,6 +10,9 @@
         <h2 class="text-2xl leading-7 font-semibold">
           Welcome to your Nuxt Application
         </h2>
+        <h1 class="mt-4 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+          Hello World!
+        </h1>
         <p class="mt-3 text-gray-600">
           We recommend you take a look at the <a href="https://nuxtjs.org" target="_blank" class="button--doc text-green-500 hover:underline">Nuxt Documentation</a>, whether you are new or have previous experience with the framework.<br>
         </p>
