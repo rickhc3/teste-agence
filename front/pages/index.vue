@@ -6,11 +6,11 @@
         <div class="flex">
           <div class="w-1/2 pr-2">
             <label class="block mb-2" for="start-date">Data Inicial</label>
-            <input type="date" id="start-date" class="border p-2 w-full" />
+            <input type="date" class="border p-2 w-full" v-model="start_at" />
           </div>
           <div class="w-1/2 pl-2">
             <label class="block mb-2" for="end-date">Data Final</label>
-            <input type="date" id="end-date" class="border p-2 w-full" />
+            <input type="date" class="border p-2 w-full" v-model="end_at" />
           </div>
         </div>
       </div>
@@ -43,6 +43,18 @@
         </ul>
       </div>
     </div>
+    <div class="flex justify-center mt-8">
+      <button
+        class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded"
+        @click="fetchDataConsultant"
+      >
+        Buscar
+      </button>
+    </div>
+
+    <consultant-tables :api-data="responseData" />
+
+
   </div>
 </template>
 
@@ -50,8 +62,11 @@
 export default {
   data() {
     return {
-      availableConsultants: [], // Dados da API para consultores disponíveis
-      selectedConsultants: [], // Consultores selecionados
+      availableConsultants: [],
+      selectedConsultants: [],
+      start_at: "",
+      end_at: "",
+      responseData: {},
     };
   },
   mounted() {
@@ -59,7 +74,6 @@ export default {
   },
   methods: {
     fetchApi() {
-      // Substitua esta chamada com a chamada real para a API
       this.$axios.get("consultants").then((res) => {
         this.availableConsultants = res.data.data;
       });
@@ -89,6 +103,25 @@ export default {
       if (index !== -1) {
         this.selectedConsultants.splice(index, 1);
       }
+    },
+
+    fetchDataConsultant() {
+      const consultants = this.selectedConsultants.map(
+        (consultant) => consultant.co_usuario
+      );
+
+      this.$axios
+        .get("consultants/net-revenue", {
+          params: {
+            start_at: this.start_at,
+            end_at: this.end_at,
+            users: consultants,
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          this.responseData = res.data;
+        });
     },
   },
 };
