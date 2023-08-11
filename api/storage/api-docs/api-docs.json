@@ -205,6 +205,31 @@
                     }
                 }
             }
+        },
+        "/api/invoices/order-dates": {
+            "get": {
+                "tags": [
+                    "Invoices"
+                ],
+                "summary": "Get unique order dates from invoices",
+                "operationId": "93e3d5731d8589a513fe65d5ec061a87",
+                "responses": {
+                    "200": {
+                        "description": "Successful response with unique order dates",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "example": "2023-01"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {

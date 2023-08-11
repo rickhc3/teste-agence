@@ -31,54 +31,54 @@ class ConsultantsController extends Controller
         return ConsultantResource::collection($consultants);
     }
 
-/**
- * @OA\Get(
- *      path="/api/consultants/net-revenue",
- *      summary="Consultants' Net Revenue and related information per month",
- *      tags={"Consultores"},
- *      @OA\Parameter(
- *          name="users[]",
- *          in="query",
- *          description="Usernames of the consultants",
- *          @OA\Schema(type="array", @OA\Items(type="string"))
- *      ),
- *      @OA\Parameter(
- *          name="start_at",
- *          in="query",
- *          description="Start date (format: YYYY-MM-DD)",
- *          @OA\Schema(type="string")
- *      ),
- *      @OA\Parameter(
- *          name="end_at",
- *          in="query",
- *          description="End date (format: YYYY-MM-DD)",
- *          @OA\Schema(type="string")
- *      ),
- *      @OA\Response(
- *          response=200,
- *          description="Success",
- *          @OA\JsonContent(
- *              type="array",
- *              @OA\Items(
- *                  @OA\Property(property="co_usuario", type="string"),
- *                  @OA\Property(property="no_usuario", type="string"),
- *                  @OA\Property(property="months", type="object",
- *                      @OA\Property(property="YYYY-MM", type="object",
- *                          @OA\Property(property="net_revenue", type="string"),
- *                          @OA\Property(property="brut_salario", type="string"),
- *                          @OA\Property(property="comission", type="string"),
- *                          @OA\Property(property="profit", type="string")
- *                      )
- *                  )
- *              )
- *          )
- *      ),
- *      @OA\Response(
- *          response=422,
- *          description="Validation Error",
- *      ),
- * )
- */
+    /**
+     * @OA\Get(
+     *      path="/api/consultants/net-revenue",
+     *      summary="Consultants' Net Revenue and related information per month",
+     *      tags={"Consultores"},
+     *      @OA\Parameter(
+     *          name="users[]",
+     *          in="query",
+     *          description="Usernames of the consultants",
+     *          @OA\Schema(type="array", @OA\Items(type="string"))
+     *      ),
+     *      @OA\Parameter(
+     *          name="start_at",
+     *          in="query",
+     *          description="Start date (format: YYYY-MM-DD)",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Parameter(
+     *          name="end_at",
+     *          in="query",
+     *          description="End date (format: YYYY-MM-DD)",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Success",
+     *          @OA\JsonContent(
+     *              type="array",
+     *              @OA\Items(
+     *                  @OA\Property(property="co_usuario", type="string"),
+     *                  @OA\Property(property="no_usuario", type="string"),
+     *                  @OA\Property(property="months", type="object",
+     *                      @OA\Property(property="YYYY-MM", type="object",
+     *                          @OA\Property(property="net_revenue", type="string"),
+     *                          @OA\Property(property="brut_salario", type="string"),
+     *                          @OA\Property(property="comission", type="string"),
+     *                          @OA\Property(property="profit", type="string")
+     *                      )
+     *                  )
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Validation Error",
+     *      ),
+     * )
+     */
 
 
 
@@ -87,6 +87,14 @@ class ConsultantsController extends Controller
         $userIds = $request->input('users');
         $startAt = $request->input('start_at');
         $endAt = $request->input('end_at');
+
+        if ($startAt !== null) {
+            $startAt = Carbon::parse($startAt)->firstOfMonth()->format('Y-m-d');
+        }
+
+        if ($endAt !== null) {
+            $endAt = Carbon::parse($endAt)->lastOfMonth()->format('Y-m-d');
+        }
 
         $consultantsQuery = $this->getActiveConsultantsWithPermissions();
 
@@ -135,6 +143,8 @@ class ConsultantsController extends Controller
 
         return response()->json($result);
     }
+
+
 
 
     private function calculateNetRevenueForMonth($consultant, $startDate)
