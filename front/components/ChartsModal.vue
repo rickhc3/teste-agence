@@ -2,11 +2,11 @@
   <div v-if="show" @close="closeModal">
     <div class="modal-content">
       <div class="flex flex-col md:flex-row">
-        <div class="w-full md:w-2/3 pr-0 md:pr-4">
+        <div class="w-full md:w-2/3 pr-0 md:pr-4" v-if="barChartData">
           <h3 class="text-md font-semibold mb-2">Performance Comercial</h3>
           <bar-chart :data="barChartData" :options="barChartOptions" />
         </div>
-        <div class="w-full md:w-1/3 mt-4 md:mt-0">
+        <div class="w-full md:w-1/3 mt-4 md:mt-0" v-if="pieChartData" :class="{ 'mx-auto text-center': !barChartData }">
           <h3 class="text-md font-semibold mb-2">Participação na Receita</h3>
           <pie-chart :data="pieChartData" :options="pieChartOptions" />
         </div>
@@ -14,6 +14,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 export default {

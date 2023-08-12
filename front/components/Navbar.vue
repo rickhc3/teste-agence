@@ -31,9 +31,21 @@ export default {
       activeTab: 'consultor'
     };
   },
+  created() {
+    if (this.$route.name === 'customers') {
+      this.activeTab = 'cliente';
+    } else {
+      this.activeTab = 'consultor';
+    }
+  },
   methods: {
     changeTab(tab) {
       this.activeTab = tab;
+      if (tab === 'consultor') {
+        this.$router.push({ name: 'index' });
+      } else if (tab === 'cliente') {
+        this.$router.push({ name: 'customers' });
+      }
     }
   }
 };
