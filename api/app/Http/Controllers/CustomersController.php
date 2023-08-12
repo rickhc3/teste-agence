@@ -78,53 +78,67 @@ class CustomersController extends Controller
      */
 
 
-    public function showNetRevenue(Request $request)
-    {
-        $customerIds = $request->input('customers');
-        $startAt = $request->input('start_at');
-        $endAt = $request->input('end_at');
+     public function showNetRevenue(Request $request)
+     {
+         $customerIds = $request->input('customers');
+         $startAt = $request->input('start_at');
+         $endAt = $request->input('end_at');
 
-        $customersQuery = $this->getActiveCustomers();
+         $customersQuery = $this->getActiveCustomers();
 
-        if (!empty($customerIds)) {
-            $customersQuery->whereIn('co_cliente', $customerIds);
-        }
+         if (!empty($customerIds)) {
+             $customersQuery->whereIn('co_cliente', $customerIds);
+         }
 
-        $customers = $customersQuery->with(['invoices' => function ($query) use ($startAt, $endAt) {
-            if ($startAt !== null && $endAt !== null) {
-                $query->whereBetween('data_emissao', [$startAt, $endAt]);
-            }
-        }])->get();
+         $customers = $customersQuery->with(['invoices' => function ($query) use ($startAt, $endAt) {
+             if ($startAt !== null && $endAt !== null) {
+                 $query->whereBetween('data_emissao', [$startAt, $endAt]);
+             }
+         }])->get();
 
-        $result = [];
+         $result = [];
 
-        foreach ($customers as $customer) {
-            $customerData = [
-                'customer_id' => $customer->co_cliente,
-                'customer_name' => $customer->no_fantasia,
-                'months' => []
-            ];
+         foreach ($customers as $customer) {
+             $customerData = [
+                 'customer_id' => $customer->co_cliente,
+                 'customer_name' => $customer->no_fantasia,
+                 'months' => []
+             ];
 
-            $startDate = Carbon::parse($startAt);
-            $endDate = Carbon::parse($endAt);
+             $startDate = Carbon::parse($startAt);
+             $endDate = Carbon::parse($endAt);
 
-            while ($startDate->lte($endDate)) {
-                $month = $startDate->format('Y-m');
+             while ($startDate->lte($endDate)) {
+                 $month = $startDate->format('Y-m');
 
-                $netRevenue = $this->calculateNetRevenue($customer);
+                 $netRevenue = $this->calculateNetRevenueForMonth($customer, $startDate);
 
-                $customerData['months'][$month] = [
-                    'net_revenue' => number_format($netRevenue, 2, '.', ','),
-                ];
+                 $customerData['months'][$month] = [
+                     'net_revenue' => number_format($netRevenue, 2, '.', ','),
+                 ];
 
-                $startDate->addMonth();
-            }
+                 $startDate->addMonth();
+             }
 
-            $result[] = $customerData;
-        }
+             $result[] = $customerData;
+         }
 
-        return response()->json($result);
-    }
+         return response()->json($result);
+     }
+
+     private function calculateNetRevenueForMonth($customer, $date)
+     {
+         $invoices = $customer->invoices->filter(function ($invoice) use ($date) {
+             return Carbon::parse($invoice->data_emissao)->format('Y-m') === $date->format('Y-m');
+         });
+
+         /* if ($invoices->isEmpty()) {
+             return 0;
+         } */
+
+         $taxes = ($invoices->sum('valor') * ($invoices->sum('total_imp_inc') / 100));
+         return $invoices->sum('valor') - $taxes;
+     }
 
     private function getActiveCustomers()
     {
@@ -133,7 +147,15 @@ class CustomersController extends Controller
 
     private function calculateNetRevenue($customer)
     {
-        $taxes = ($customer->invoices->sum('valor') * ($customer->invoices->sum('total_imp_inc') / 100));
-        return $customer->invoices->sum('valor') - $taxes;
+        $invoices = $customer->invoices->filter(function ($invoice) {
+            return Carbon::parse($invoice->data_emissao);
+        });
+
+        if ($invoices->isEmpty()) {
+            return 0;
+        }
+
+        $taxes = ($invoices->sum('valor') * ($invoices->sum('total_imp_inc') / 100));
+        return $invoices->sum('valor') - $taxes;
     }
 }
