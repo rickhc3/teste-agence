@@ -36,6 +36,7 @@
             {{ customer.no_fantasia }}
           </li>
         </ul>
+        <small class="text-gray-500">*Clique no nome do cliente para selecionar</small>
       </div>
       <div class="w-1/2 pl-4">
         <h2 class="text-md font-semibold mb-4">Clientes Selecionados</h2>
@@ -49,6 +50,7 @@
             {{ customer.no_fantasia }}
           </li>
         </ul>
+        <small class="text-gray-500">*Clique no nome do cliente para remover</small>
       </div>
     </div>
 

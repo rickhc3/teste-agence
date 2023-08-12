@@ -36,6 +36,7 @@
             {{ consultant.no_usuario }}
           </li>
         </ul>
+        <small class="text-gray-500">*Clique no nome do consultor para selecionar</small>
       </div>
       <div class="w-1/2 pl-4">
         <h2 class="text-md font-semibold mb-4">Consultores Selecionados</h2>
@@ -49,6 +50,7 @@
             {{ consultant.no_usuario }}
           </li>
         </ul>
+        <small class="text-gray-500">*Clique no nome do consultor para remover</small>
       </div>
     </div>
 
@@ -67,7 +69,7 @@
         @click="toggleGraphs()"
         v-if="fetchedApi"
       >
-      {{ isGraphsOpen ? "Fechar Gráficos" : "Ver Gráficos" }}
+        {{ isGraphsOpen ? "Fechar Gráficos" : "Ver Gráficos" }}
       </button>
 
       <div
@@ -225,59 +227,59 @@ export default {
     },
 
     toggleGraphs() {
-    this.isGraphsOpen = !this.isGraphsOpen;
-  },
+      this.isGraphsOpen = !this.isGraphsOpen;
+    },
   },
 
   computed: {
     preparedBarChartData() {
-    const consultantsData = this.responseData;
-    const months = this.dates.map((date) => this.formatDate(date));
-    const totalFixedSalaries = consultantsData.reduce((total, consultant) => {
-      const [monthNumber, year] = months[0].split("/");
-      const monthDate = `${year}-${monthNumber}`;
-      return (
-        total +
-        parseFloat(
-          consultant.months[monthDate]?.brut_salario?.replace?.(/,/g, "") ||
-            "0"
-        )
-      );
-    }, 0);
-    const averageFixedCost = totalFixedSalaries / consultantsData.length;
+      const consultantsData = this.responseData;
+      const months = this.dates.map((date) => this.formatDate(date));
+      const totalFixedSalaries = consultantsData.reduce((total, consultant) => {
+        const [monthNumber, year] = months[0].split("/");
+        const monthDate = `${year}-${monthNumber}`;
+        return (
+          total +
+          parseFloat(
+            consultant.months[monthDate]?.brut_salario?.replace?.(/,/g, "") ||
+              "0"
+          )
+        );
+      }, 0);
+      const averageFixedCost = totalFixedSalaries / consultantsData.length;
 
-    const barChartData = {
-      labels: months,
-      datasets: consultantsData.map((consultant) => {
-        const data = months.map((month) => {
-          const [monthNumber, year] = month.split("/");
-          const monthDate = `${year}-${monthNumber}`;
-          const monthData = consultant.months[monthDate] || {};
-          return parseFloat(
-            monthData.net_revenue?.replace?.(/,/g, "") || "0"
-          );
-        });
+      const barChartData = {
+        labels: months,
+        datasets: consultantsData.map((consultant) => {
+          const data = months.map((month) => {
+            const [monthNumber, year] = month.split("/");
+            const monthDate = `${year}-${monthNumber}`;
+            const monthData = consultant.months[monthDate] || {};
+            return parseFloat(
+              monthData.net_revenue?.replace?.(/,/g, "") || "0"
+            );
+          });
 
-        return {
-          label: consultant.no_usuario,
-          backgroundColor: this.getRandomColor(),
-          data,
-        };
-      }),
-    };
+          return {
+            label: consultant.no_usuario,
+            backgroundColor: this.getRandomColor(),
+            data,
+          };
+        }),
+      };
 
-    barChartData.datasets.unshift({
-      type: "line",
-      label: "Custo Fixo Médio",
-      borderColor: "#cecece",
-      backgroundColor: "#cecece",
-      borderWidth: 3,
-      data: Array(months.length).fill(averageFixedCost),
-      fill: false,
-    });
+      barChartData.datasets.unshift({
+        type: "line",
+        label: "Custo Fixo Médio",
+        borderColor: "#cecece",
+        backgroundColor: "#cecece",
+        borderWidth: 3,
+        data: Array(months.length).fill(averageFixedCost),
+        fill: false,
+      });
 
-    return barChartData;
-  },
+      return barChartData;
+    },
 
     preparedPieChartData() {
       const totalRevenue = this.responseData.reduce((total, consultant) => {
@@ -305,8 +307,7 @@ export default {
               )
             ),
             order: 2,
-            backgroundColor: this.responseData.map(() => this.getRandomColor())
-
+            backgroundColor: this.responseData.map(() => this.getRandomColor()),
           },
         ],
       };
