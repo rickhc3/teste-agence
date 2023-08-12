@@ -6,7 +6,7 @@
     </div>
 
     <footer class="bg-gray-800 text-white text-center py-4 fixed bottom-0 w-full">
-      <p>&copy; 2023 Seu Nome. Todos os direitos reservados.</p>
+      <p>&copy; 2023</p>
     </footer>
   </div>
 </template>
