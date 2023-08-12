@@ -10,7 +10,7 @@ class InvoiceController extends Controller
     /**
      * @OA\Get(
      *      path="/api/invoices/order-dates",
-     *      summary="Get unique order dates from invoices",
+     *      summary="Obter datas (YYYY-MM) disponíveis de emissão de notas fiscais",
      *      tags={"Invoices"},
      *      @OA\Response(
      *          response=200,
