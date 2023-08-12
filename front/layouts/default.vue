@@ -5,7 +5,7 @@
       <Nuxt :key="componentKey"/>
     </div>
 
-    <footer class="bg-gray-800 text-white text-center py-4 fixed bottom-0 w-full">
+    <footer class="bg-gray-800 text-white text-center py-4">
       <p>&copy; 2023</p>
     </footer>
   </div>

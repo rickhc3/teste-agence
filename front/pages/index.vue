@@ -30,7 +30,7 @@
           <li
             v-for="consultant in availableConsultants"
             :key="consultant.co_usuario"
-            class="cursor-pointer hover:bg-gray-100 p-2"
+            class="cursor-pointer hover:bg-blue-100 p-2 select-none"
             @click="selectConsultant(consultant)"
           >
             {{ consultant.no_usuario }}
@@ -44,7 +44,7 @@
           <li
             v-for="consultant in selectedConsultants"
             :key="consultant.co_usuario"
-            class="cursor-pointer hover:bg-gray-100 p-2"
+            class="cursor-pointer hover:bg-blue-100 p-2 select-none"
             @click="deselectConsultant(consultant)"
           >
             {{ consultant.no_usuario }}
@@ -271,8 +271,8 @@ export default {
       barChartData.datasets.unshift({
         type: "line",
         label: "Custo Fixo Médio",
-        borderColor: "#cecece",
-        backgroundColor: "#cecece",
+        borderColor: "#050c6b",
+        backgroundColor: "#050c6b",
         borderWidth: 3,
         data: Array(months.length).fill(averageFixedCost),
         fill: false,

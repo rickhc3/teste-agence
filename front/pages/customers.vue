@@ -30,7 +30,7 @@
           <li
             v-for="customer in availableCustomers"
             :key="customer.co_cliente"
-            class="cursor-pointer hover:bg-gray-100 p-2"
+            class="cursor-pointer hover:bg-blue-100 p-2 select-none"
             @click="selectConsultant(customer)"
           >
             {{ customer.no_fantasia }}
@@ -44,7 +44,7 @@
           <li
             v-for="customer in selectedCustomers"
             :key="customer.co_cliente"
-            class="cursor-pointer hover:bg-gray-100 p-2"
+            class="cursor-pointer hover:bg-blue-100 p-2 select-none"
             @click="deselectConsultant(customer)"
           >
             {{ customer.no_fantasia }}
