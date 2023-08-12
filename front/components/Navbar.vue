@@ -9,7 +9,7 @@
         }"
         @click="changeTab('consultor')"
       >
-        Por Consultor
+        Consultor
       </a>
       <a
         :class="{
@@ -18,7 +18,7 @@
         }"
         @click="changeTab('cliente')"
       >
-        Por Cliente
+        Cliente
       </a>
     </div>
   </section>
