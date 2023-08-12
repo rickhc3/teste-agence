@@ -122,7 +122,7 @@ class CustomersController extends Controller
                  $netRevenue = $this->calculateNetRevenueForMonth($customer, $startDate);
 
                  $customerData['months'][$month] = [
-                     'net_revenue' => number_format($netRevenue, 2, '.', ','),
+                     'net_revenue' => number_format($netRevenue, 2, ',', '.'),
                  ];
 
                  $startDate->addMonth();
