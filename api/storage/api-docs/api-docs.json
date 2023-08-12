@@ -190,8 +190,16 @@
                                             "customer_name": {
                                                 "type": "string"
                                             },
-                                            "net_revenue": {
-                                                "type": "string"
+                                            "months": {
+                                                "type": "object",
+                                                "additionalProperties": {
+                                                    "properties": {
+                                                        "net_revenue": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
                                             }
                                         },
                                         "type": "object"

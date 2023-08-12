@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CustomerResource;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 
@@ -61,7 +62,11 @@ class CustomersController extends Controller
      *              @OA\Items(
      *                  @OA\Property(property="customer_id", type="integer"),
      *                  @OA\Property(property="customer_name", type="string"),
-     *                  @OA\Property(property="net_revenue", type="string"),
+     *                  @OA\Property(property="months", type="object",
+     *                      @OA\AdditionalProperties(
+     *                          @OA\Property(property="net_revenue", type="string")
+     *                      )
+     *                  ),
      *              )
      *          ),
      *      ),
@@ -71,6 +76,7 @@ class CustomersController extends Controller
      *      ),
      * )
      */
+
 
     public function showNetRevenue(Request $request)
     {
@@ -90,15 +96,32 @@ class CustomersController extends Controller
             }
         }])->get();
 
-        $result = $customers->map(function ($customer) use ($startAt, $endAt) {
-            $netRevenue = $this->calculateNetRevenue($customer);
+        $result = [];
 
-            return [
+        foreach ($customers as $customer) {
+            $customerData = [
                 'customer_id' => $customer->co_cliente,
                 'customer_name' => $customer->no_fantasia,
-                'net_revenue' => number_format($netRevenue, 2, '.', ','),
+                'months' => []
             ];
-        });
+
+            $startDate = Carbon::parse($startAt);
+            $endDate = Carbon::parse($endAt);
+
+            while ($startDate->lte($endDate)) {
+                $month = $startDate->format('Y-m');
+
+                $netRevenue = $this->calculateNetRevenue($customer);
+
+                $customerData['months'][$month] = [
+                    'net_revenue' => number_format($netRevenue, 2, '.', ','),
+                ];
+
+                $startDate->addMonth();
+            }
+
+            $result[] = $customerData;
+        }
 
         return response()->json($result);
     }
