@@ -129,10 +129,10 @@ class ConsultantsController extends Controller
                 $profit = $netRevenue - ($fixedCost + $comission);
 
                 $consultantData['months'][$month] = [
-                    'net_revenue' => number_format($netRevenue, 2, ',', '.'),
-                    'brut_salario' => number_format($fixedCost, 2, ',', '.'),
-                    'comission' => number_format($comission, 2, ',', '.'),
-                    'profit' => number_format($profit, 2, ',', '.')
+                    'net_revenue' => number_format($netRevenue, 2, '.', ','),
+                    'brut_salario' => number_format($fixedCost, 2, '.', ','),
+                    'comission' => number_format($comission, 2, '.', ','),
+                    'profit' => number_format($profit, 2, '.', ',')
                 ];
 
                 $startDate->addMonth();
