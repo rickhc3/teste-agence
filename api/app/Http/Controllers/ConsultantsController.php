@@ -34,7 +34,7 @@ class ConsultantsController extends Controller
     /**
      * @OA\Get(
      *      path="/api/consultants/net-revenue",
-     *      summary="Consultores" Receita Líquida e informações relacionadas por mês",
+     *      summary="Consultores' Receita Líquida e informações relacionadas por mês",
      *      tags={"Consultores"},
      *      @OA\Parameter(
      *          name="users[]",
