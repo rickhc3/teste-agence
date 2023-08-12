@@ -84,6 +84,14 @@ class CustomersController extends Controller
          $startAt = $request->input('start_at');
          $endAt = $request->input('end_at');
 
+         if ($startAt !== null) {
+            $startAt = Carbon::parse($startAt)->firstOfMonth()->format('Y-m-d');
+        }
+
+        if ($endAt !== null) {
+            $endAt = Carbon::parse($endAt)->lastOfMonth()->format('Y-m-d');
+        }
+
          $customersQuery = $this->getActiveCustomers();
 
          if (!empty($customerIds)) {
