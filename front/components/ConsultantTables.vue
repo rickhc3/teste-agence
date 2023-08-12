@@ -19,12 +19,12 @@
               :key="period"
               class="bg-white"
             >
-              <td class="py-2 px-4">{{ formatDate(period) }}</td>
-              <td class="py-2 px-4">{{ formatCurrency(data.net_revenue) }}</td>
-              <td class="py-2 px-4">-{{ formatCurrency(data.brut_salario) }}</td>
-              <td class="py-2 px-4">-{{ formatCurrency(data.comission) }}</td>
+              <td class="py-2 px-4 whitespace-nowrap">{{ formatDate(period) }}</td>
+              <td class="py-2 px-4 whitespace-nowrap">{{ formatCurrency(data.net_revenue) }}</td>
+              <td class="py-2 px-4 whitespace-nowrap">-{{ formatCurrency(data.brut_salario) }}</td>
+              <td class="py-2 px-4 whitespace-nowrap">-{{ formatCurrency(data.comission) }}</td>
               <td
-                class="py-2 px-4"
+                class="py-2 px-4 whitespace-nowrap"
                 :class="{
                   'text-red-500':
                     parseFloat(data.profit.replace('.', '').replace(',', '.')) <
@@ -39,28 +39,28 @@
               </td>
             </tr>
             <tr class="bg-gray-100">
-              <td class="py-2 px-4"><strong>Total</strong></td>
-              <td class="py-2 px-4">
+              <td class="py-2 px-4 whitespace-nowrap"><strong>Total</strong></td>
+              <td class="py-2 px-4 whitespace-nowrap">
                 {{
                   formatCurrency(
                     calculateTotal(consultant.months, "net_revenue")
                   )
                 }}
               </td>
-              <td class="py-2 px-4">
+              <td class="py-2 px-4 whitespace-nowrap">
                 {{
                   formatCurrency(
                     calculateTotal(consultant.months, "brut_salario")
                   )
                 }}
               </td>
-              <td class="py-2 px-4">
+              <td class="py-2 px-4 whitespace-nowrap">
                 {{
                   formatCurrency(calculateTotal(consultant.months, "comission"))
                 }}
               </td>
               <td
-                class="py-2 px-4"
+                class="py-2 px-4 whitespace-nowrap"
                 :class="{
                   'text-red-500':
                     parseFloat(calculateTotal(consultant.months, 'profit')) < 0,

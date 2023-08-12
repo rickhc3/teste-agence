@@ -64,9 +64,10 @@
 
       <button
         class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded"
-        @click="openModal"
+        @click="toggleGraphs()"
+        v-if="fetchedApi"
       >
-        Ver Gráficos
+      {{ isGraphsOpen ? "Fechar Gráficos" : "Ver Gráficos" }}
       </button>
 
       <div
@@ -77,9 +78,9 @@
       </div>
     </div>
 
-    <div class="w-full justify-center mt-8 my-5">
+    <div class="w-full justify-center mt-8 my-5" v-if="isGraphsOpen">
       <charts-modal
-        :show="isModalVisible"
+        :show="isGraphsOpen"
         :bar-chart-data="preparedBarChartData"
         :pie-chart-data="preparedPieChartData"
         @close-modal="closeModal"
@@ -104,6 +105,8 @@ export default {
       mgsToast: "",
       isLoading: false,
       isModalVisible: false,
+      isGraphsOpen: false,
+      fetchedApi: false,
     };
   },
   mounted() {
@@ -180,6 +183,7 @@ export default {
         .then((res) => {
           this.responseData = res.data;
           this.isLoading = false;
+          this.fetchedApi = true;
         });
     },
 
@@ -211,14 +215,18 @@ export default {
         return;
       }
 
-      this.isModalVisible = true;
+      this.isGraphsOpen = true;
     },
     closeModal() {
-      this.isModalVisible = false;
+      this.isGraphsOpen = false;
     },
     getRandomColor() {
       return "#" + Math.floor(Math.random() * 16777215).toString(16);
     },
+
+    toggleGraphs() {
+    this.isGraphsOpen = !this.isGraphsOpen;
+  },
   },
 
   computed: {
