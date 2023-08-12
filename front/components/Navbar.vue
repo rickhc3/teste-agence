@@ -1,8 +1,6 @@
 <template>
-  <section class="pt-8 px-6">
-    <h2 class="mb-4 text-2xl font-bold">Teste Agence</h2>
-
-    <h3 class="mb-4 text-md font-bold">Performance Comercial</h3>
+  <section class="pt-4 px-3 bg-black">
+    <h2 class="mb-4 text-2xl font-bold text-white">Teste Agence - Performance Comercial</h2>
     <div class="flex flex-wrap text-sm text-center">
       <a
         :class="{

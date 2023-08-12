@@ -1,11 +1,7 @@
 <template>
   <div>
-    <div
-      v-for="(consultantData, consultantName) in apiData"
-      :key="consultantName"
-      class="mb-8"
-    >
-      <h2 class="text-xl font-semibold mb-4">{{ consultantName }}</h2>
+    <div v-for="(consultant, index) in apiData" :key="index" class="mb-8">
+      <h2 class="text-xl font-semibold mb-4">{{ consultant.no_usuario }}</h2>
       <div class="overflow-x-auto">
         <table class="min-w-full border rounded-lg overflow-hidden">
           <thead class="bg-gray-200">
@@ -19,14 +15,14 @@
           </thead>
           <tbody>
             <tr
-              v-for="data in consultantData"
-              :key="data.co_usuario"
+              v-for="(data, period) in consultant.months"
+              :key="period"
               class="bg-white"
             >
-              <td class="py-2 px-4">{{ data.no_usuario }}</td>
+              <td class="py-2 px-4">{{ formatDate(period) }}</td>
               <td class="py-2 px-4">{{ formatCurrency(data.net_revenue) }}</td>
-              <td class="py-2 px-4">{{ formatCurrency(data.brut_salario) }}</td>
-              <td class="py-2 px-4">{{ formatCurrency(data.comission) }}</td>
+              <td class="py-2 px-4">-{{ formatCurrency(data.brut_salario) }}</td>
+              <td class="py-2 px-4">-{{ formatCurrency(data.comission) }}</td>
               <td
                 class="py-2 px-4"
                 :class="{
@@ -43,32 +39,39 @@
               </td>
             </tr>
             <tr class="bg-gray-100">
-              <td class="py-2 px-4">Total</td>
+              <td class="py-2 px-4"><strong>Total</strong></td>
               <td class="py-2 px-4">
                 {{
-                  formatCurrency(calculateTotal(consultantData, "net_revenue"))
+                  formatCurrency(
+                    calculateTotal(consultant.months, "net_revenue")
+                  )
                 }}
               </td>
               <td class="py-2 px-4">
                 {{
-                  formatCurrency(calculateTotal(consultantData, "brut_salario"))
+                  formatCurrency(
+                    calculateTotal(consultant.months, "brut_salario")
+                  )
                 }}
               </td>
               <td class="py-2 px-4">
                 {{
-                  formatCurrency(calculateTotal(consultantData, "comission"))
+                  formatCurrency(calculateTotal(consultant.months, "comission"))
                 }}
               </td>
               <td
                 class="py-2 px-4"
                 :class="{
                   'text-red-500':
-                    parseFloat(calculateTotal(consultantData, 'profit')) < 0,
+                    parseFloat(calculateTotal(consultant.months, 'profit')) < 0,
                   'text-blue-500':
-                    parseFloat(calculateTotal(consultantData, 'profit')) >= 0,
+                    parseFloat(calculateTotal(consultant.months, 'profit')) >=
+                    0,
                 }"
               >
-                {{ formatCurrency(calculateTotal(consultantData, "profit")) }}
+                {{
+                  formatCurrency(calculateTotal(consultant.months, "profit"))
+                }}
               </td>
             </tr>
           </tbody>
@@ -81,28 +84,37 @@
 <script>
 export default {
   props: {
-    apiData: Object,
+    apiData: Array,
   },
   methods: {
-    calculateTotal(dataArray, field) {
-      return dataArray
-        .reduce(
-          (acc, curr) =>
-            acc + parseFloat(curr[field].replace(".", "").replace(",", ".")),
-          0
-        )
-        .toFixed(2);
+    calculateTotal(months, field) {
+      let total = 0;
+      for (const period in months) {
+        total += parseFloat(
+          months[period][field].replace(".", "").replace(",", "")
+        );
+      }
+      let totalTest = total / 10000;
+      return totalTest.toFixed(2);
     },
     formatCurrency(value) {
       return parseFloat(
         value.replace(".", "").replace(",", ".")
-      ).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+      ).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      });
     },
-
-  },
-  mounted() {
-    console.log(this.apiData);
+    formatDate(date) {
+      const options = {
+        year: "numeric",
+        month: "2-digit",
+        timeZone: "America/Sao_Paulo",
+      };
+      const [year, month] = date.split("-");
+      const formattedDate = new Date(year, month - 1); // Subtrai 1 do mês para compensar a indexação baseada em zero
+      return formattedDate.toLocaleDateString("en-US", options);
+    },
   },
 };
 </script>
-
