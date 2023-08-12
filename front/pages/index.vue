@@ -269,8 +269,8 @@ export default {
     barChartData.datasets.unshift({
       type: "line",
       label: "Custo Fixo Médio",
-      borderColor: "rgba(255, 0, 0, 0.7)",
-      backgroundColor: "rgba(255, 0, 0, 0.7)",
+      borderColor: "#cecece",
+      backgroundColor: "#cecece",
       borderWidth: 3,
       data: Array(months.length).fill(averageFixedCost),
       fill: false,
