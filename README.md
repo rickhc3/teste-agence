@@ -39,4 +39,4 @@ O frontend do projeto está hospedado na Vercel.
 
 ## Configuração do Banco de Dados
 
-O banco de dados utilizado é o MySQL 8. Devido a requisitos específicos, foi necessário incluir a linha `SET sql_mode='NO_ZERO_DATE';` no arquivo de dump para permitir datas com valores inválidos. Para alimentar o bando de dados, criei uma seed no Laravel, disponível através do comando `php artisan db:seed --class=DataSeedCaol`
+O banco de dados utilizado é o MySQL 8. Devido a requisitos específicos, foi necessário incluir a linha `SET sql_mode='NO_ZERO_DATE';` no arquivo de dump para desativar o modo de verificação rigoroso para datas. Para alimentar o bando de dados, criei uma seed no Laravel, disponível através do comando `php artisan db:seed --class=DataSeedCaol`
