@@ -48,6 +48,7 @@
                 }}
               </td>
               <td class="py-2 px-4 whitespace-nowrap">
+                -
                 {{
                   formatCurrency(
                     calculateTotal(consultant.months, "brut_salario")
@@ -55,6 +56,7 @@
                 }}
               </td>
               <td class="py-2 px-4 whitespace-nowrap">
+                -
                 {{
                   formatCurrency(calculateTotal(consultant.months, "comission"))
                 }}
